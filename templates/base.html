@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Система управління завданнями</title>
+</head>
+<body>
+    <nav>
+        <a href="{% url 'tasks:task-list' %}">Головна</a>
+    </nav>
+    
+    {% block content %}
+    {% endblock content%}
+</body>
+</html>
