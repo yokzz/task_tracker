@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div>
+        <h2>{{ task.title }}</h2>
+        <p>{{ task.description }}</p>
+        <p>Статус: <span>{{ task.status }}</span></p>
+        <p>Пріорітет: <span>{{ task.priority }}</span></p>
+    </div>
+{% endblock content %}
