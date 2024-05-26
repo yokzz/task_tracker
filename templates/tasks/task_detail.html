@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
-    <div class="container-fluid">
+{% load custom_tags %}
+    <div class="container-sm">
         <div class="card" style="width: 18rem;">
             <div class="card-body">
               <h5 class="card-title">{{ task.title }}</h5>
@@ -8,9 +9,9 @@
               <p class="card-text">{{ task.description }}</p>
               {% if task.priority == "low" %}
               <span class="badge text-bg-secondary">{{ task.priority }}</span>
-              {% elif task.status == "medium" %}
+              {% elif task.priority == "medium" %}
               <span class="badge text-bg-primary">{{ task.priority }}</span>
-              {% elif task.status == "high" %}
+              {% elif task.priority == "high" %}
               <span class="badge text-bg-warning">{{ task.priority }}</span>
               {% else %}
               <span class="badge text-bg-danger">{{ task.priority }}</span>
@@ -30,26 +31,52 @@
               <a href="{% url 'tasks:task-delete' task.id %}" class="btn btn-danger card-link">Видалити</a>
             </div>
           </div>
-    <!-- Коментарі -->
-    <div class="comments mt-4">
-        <h3>Коментарі</h3>
-        {% for comment in task.comments.all %}
-            <div class="comment mb-2">
-                <p>{{ comment.content }}</p>
-                <small>Автор: {{ comment.author.username }}</small>
-            </div>
-        {% empty %}
-            <p>Коментарі відсутні.</p>
-        {% endfor %}
-    </div>
-
-    <!-- Форма додавання коментаря -->
-    <div class="add-comment mt-4">
-        <h4>Додати коментар</h4>
-        <form action="{% url 'tasks:task-detail' task.id %}" method="post" enctype="multipart/form-data">
-            {% csrf_token %}
-            {{ comment_form.as_p }}
-            <button type="submit" class="btn btn-primary">Відправити</button>
-        </form>
-    </div>
+  <!-- Main Body -->
+  <section>
+      <div class="container">
+          <div class="row">
+              <div class="col-sm-5 col-md-6 col-12 pb-4">
+                  <h1>Comments</h1>
+                  {% for comment in task.comments.all %}
+                  <div class="text-justify lighter mt-4 float-right">
+                    <h4>{{ comment.author.username }}</h4>
+                    <h6 class="card-subtitle mb-2 text-body-secondary">{{ comment.created_at }}</h6>
+                    <p>{{ comment.content }}</p>
+                    <div style="padding-bottom: 5px;">
+                      {% if comment.media.url|endswith:".jpg" or comment.media.url|endswith:".png" or comment.media.url|endswith:".jpeg" %}
+                        <img class="image" src="{{ comment.media.url }}" alt="Зображення коментаря" style="max-width: 320px;">
+                      {% elif comment.media.url|endswith:".mp4" %}
+                        <video class="image" width="320" height="240" controls>
+                          <source src="{{ comment.media.url }}" type="video/mp4">
+                          Your browser does not support the video tag.
+                        </video>
+                      {% else %}
+                        <a class="image" href="{{ comment.media.url }}">Завантажити файл</a>
+                      {% endif %}
+                    </div>
+                </div>
+                  {% empty %}
+                    <p>no comments</p>
+                  {% endfor %}
+              </div>
+              <div class="col-lg-4 col-md-5 col-sm-4 offset-md-1 offset-sm-1 col-12 mt-4">
+                  <form action="{% url 'tasks:task-detail' task.id %}" method="post" enctype="multipary/form-data" id="align-form" class="formm">
+                      <div class="formm-group">
+                          {% csrf_token %}
+                          <h4>Leave a comment</h4>
+                          {{ comment.content }}
+                          <label for="content">Message</label>
+                          <textarea name="content" id=""msg cols="30" rows="5" class="form-control" style="border: 1px solid #4c486b;"></textarea>
+                          {{ comment.media }}
+                          <label for="media">Media</label>
+                          <input type="file" name="media" id=""msg cols="30" rows="5" class="form-control" style="border: 1px solid #4c486b;">
+                      </div>
+                      <div class="formm-group">
+                        <button type="submit" id="post" class="light-purple-btn">Post Comment</button> 
+                      </div>
+                  </form>
+              </div>
+          </div>
+      </div>
+  </section>
 {% endblock content %}

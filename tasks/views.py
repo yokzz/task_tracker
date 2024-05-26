@@ -6,7 +6,9 @@ from tasks.forms import TaskForm, TaskFilterForm, CommentForm
 from tasks.mixins import UserIsOwnerMixin
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-
+from django.contrib.auth.views import LoginView, LogoutView
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import login
 
 class TaskListView(ListView):
     model = Task
@@ -36,7 +38,7 @@ class TaskDetailView(DetailView):
         return context
     
     def post(self, request, *args, **kwargs):
-        comment_form = CommentForm(request.POST)
+        comment_form = CommentForm(request.POST, request.FILES)
         if comment_form.is_valid():
             comment = comment_form.save(commit=False)
             comment.author = request.user
@@ -62,6 +64,3 @@ class TaskDeleteView(LoginRequiredMixin, DeleteView):
     model = Task
     template_name = "tasks/task_confirm_delete.html"
     success_url = reverse_lazy("tasks:task-list")
-    
-
-    

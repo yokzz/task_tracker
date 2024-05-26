@@ -2,40 +2,41 @@
 {% block content %}
     <div class="container-fluid">
         <h2>Список завдань</h2>
-    </div>
-    <ul>
-        <a href="{% url 'tasks:task-form' %}" class="btn btn-outline-primary">Додати завдання</a>
-    </ul>
-        <div class="container-fluid">
+        <ul>
+            <a href="{% url 'tasks:task-form' %}" class="light-outline-btn">Додати завдання</a>
+        </ul>
             <div class="alert alert-primary" role="alert">
                 <form method="get" class="form-inline mb-3">
                     <h2>Status:</h2>
                     {{ form.status }}
                     <br>
-                    <button type="submit" class="btn btn-primary ml-2">Фільтрувати</button>
+                    <button type="submit" class="light-purple-btn ml-2">Фільтрувати</button>
                 </form>
             </div>
-        </div>
-    <ul>
-        {% for task in tasks %}
-        <div class="card">
-            <div class="card-body">
-              <a class="btn btn-outline-dark card-title" href="{% url 'tasks:task-detail' task.pk %}">{{ task.title }}</a>
-              <p class="card-text">{{ task.description }}</p>
-              {% if task.status == "to_do" %}
-              <button class="btn btn-warning">{{ task.status }}</button>
-              {% elif task.status == "in_progress" %}
-              <button class="btn btn-secondary">{{ task.status }}</button>
-              {% elif task.status == "done" %}
-              <button class="btn btn-success">{{ task.status }}</button>
-              {% else %}
-              <button class="btn btn-dark">{{ task.status }}</button>
-              {% endif %}
-            </div>
-          </div>
-        {% empty %}
-        <li>Завдань не знайдено</li>
-        {% endfor %}
-    </ul>
-
+        <ul>
+            {% for task in tasks %}
+            <div class="row row-cols-1 row-cols-md-3 g-4">
+                <div class="col">
+                  <div class="card">
+                    <div class="card-body">
+                      <a class="card-title" href="{% url 'tasks:task-detail' task.pk %}">{{ task.title }}</a>
+                      <p class="card-text">{{ task.description }}</p>
+                      {% if task.status == "to_do" %}
+                      <button class="btn btn-warning">{{ task.status }}</button>
+                      {% elif task.status == "in_progress" %}
+                      <button class="btn btn-secondary">{{ task.status }}</button>
+                      {% elif task.status == "done" %}
+                      <button class="btn btn-success">{{ task.status }}</button>
+                      {% else %}
+                      <button class="btn btn-dark">{{ task.status }}</button>
+                      {% endif %}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+            {% empty %}
+            <li>Завдань не знайдено</li>
+            {% endfor %}
+        </ul>
+    </div>
 {% endblock %}

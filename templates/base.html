@@ -8,12 +8,29 @@
         <link href="{% static "css/style.css" %}" rel="stylesheet">
 </head>
 <body>
-    <div class="container-sm">
-        <nav class="nav nav-pills flex-column flex-sm-row">
-            <a class="flex-sm-fill text-sm-center nav-link active" aria-current="page" href="">Активна</a>
-            <a class="btn btn-outline-primary flex-sm-fill text-sm-center" href="/">Головна</a>
-        </nav>
-    </div>
+    <div class="container">
+        <header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom">
+          <div class="col-md-3 mb-2 mb-md-0">
+            <a href="/" class="d-inline-flex link-body-emphasis text-decoration-none">
+              <svg class="bi" width="40" height="32" role="img" aria-label="Bootstrap"><use xlink:href="#bootstrap"></use></svg>
+            </a>
+          </div>
+    
+          <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
+            <li><a href="{% url 'tasks:task-list' %}" class="dark-nav-link px-2">Home</a></li>
+            <li><a href="" class="light-nav-link px-2">Active</a></li>
+          </ul>
+    
+          <div class="col-md-3 text-end">
+            <a href="{% url 'auth_system:login' %}"class="light-outline-btn me-2">Login</a>
+            <a href="{% url 'auth_system:signup' %}" class="light-purple-btn">Sign-up</a>
+            <form action="{% url 'auth_system:logout' %}" method="post">
+              {% csrf_token %}
+              <button type="submit" class="dark-purple-btn me-2" style="vertical-align: middle;">Logout</button>
+            </form>
+          </div>
+        </header>
+      </div>
     
     {% block content %}
     {% endblock content%}
