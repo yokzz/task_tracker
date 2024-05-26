@@ -1,11 +1,35 @@
 {% extends 'base.html' %}
 {% block content %}
     <div>
-        <h2>{{ view.title }}</h2>
-        <form method="post">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit">Зберегти</button>
-        </form>
-    </div>
+        <div class="container">
+            <h1>Додати завдання</h1>
+            <form action="{% url 'tasks:task-list' %}" method="post">
+                {% csrf_token %}
+            <div class="container-sm">
+                <div class="form-group">
+                    {{ form.title }}
+                </div>
+                <br>
+                <div class="form-group">
+                    {{ form.description }}
+                </div>
+                <br>
+                <div class="form-group">
+                    {{ form.status }}
+                </div>
+                <br>
+                <div class="form-group">
+                    {{ form.priority }}
+                </div>
+                <br>
+                <div class="form-group">
+                    {{ form.due_date }}
+                </div>
+                <br>
+                <div class="form-group">
+                    <input class="btn btn-primary" type="submit" value="Відправити">
+                </div>
+            </div>
+            </form>
+        </div>
 {% endblock content %}
