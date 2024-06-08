@@ -9,6 +9,7 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, D
 from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
+from django.core.exceptions import PermissionDenied
 
 class TaskListView(ListView):
     model = Task
@@ -79,3 +80,29 @@ class CommentLikeToggle(LoginRequiredMixin, View):
         else:
             Like.objects.create(comment=comment, user=request.user)
         return HttpResponseRedirect(comment.get_absolute_url())
+    
+class CommentUpdateView(LoginRequiredMixin, UpdateView):
+    model = Comment
+    fields = ['content', 'media']
+    template_name = 'tasks/task_edit_comment.html'
+
+    def form_valid(self, form):
+        comment = self.get_object()
+        if comment.author != self.request.user:
+            raise PermissionDenied("Ви не можете редагувати цей коментар.")
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse_lazy('tasks:task_detail', kwargs={'pk': self.object.task.pk})
+
+
+class CommentDeleteView(LoginRequiredMixin, DeleteView):
+    model = Comment
+    template_name = 'tasks/task_comment_confirm_delete.html'
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        return queryset.filter(author=self.request.user)
+
+    def get_success_url(self):
+        return reverse_lazy('tasks:task_detail', kwargs={'pk': self.object.task.pk})

@@ -83,14 +83,13 @@ class TaskForm(forms.ModelForm):
     )
         
 class TaskFilterForm(forms.Form):
+            
     STATUS_CHOICES = [
         ["", "All"],
-        ["to_do", "To Do"],
-        ["in_progress", "In Progress"],
-        ["done", "Done"],
+        ["user_owner", "My tasks"]
     ]
     
-    status = forms.ChoiceField(choices=STATUS_CHOICES, required=False, label='status')
+    status = forms.ChoiceField(choices=STATUS_CHOICES, required=False)
     
     def __init__(self, *args, **kwargs):
         super(TaskFilterForm, self).__init__(*args, **kwargs)

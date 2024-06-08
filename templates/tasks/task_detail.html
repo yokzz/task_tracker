@@ -66,6 +66,10 @@
                     ❤️{{ comment.likes.count }}
                   </button>
                 </form>
+                <footer>
+                  <a href="{% url 'tasks:comment-update' comment.id %}" id="post" class="grey-btn">Edit</a>
+                  <a href="{% url 'tasks:comment-delete' comment.id %}" id="post" class="grey-btn">Delete</a>
+                </footer>
                 </div>
             {% empty %}
                 <p>No comments</p>
