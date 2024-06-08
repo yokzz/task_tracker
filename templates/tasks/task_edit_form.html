@@ -3,8 +3,8 @@
     <div>
         <div class="container grey-background">
             <br>
-            <h1 style="color: #fff;">Add Task</h1>
-            <form method="post">
+            <h1 style="color: #fff;">Edit Task</h1>
+            <form action="{% url 'tasks:task-list' %}" method="post">
                 {% csrf_token %}
                 <div class="formm-group">
                     {{ form.title }}
@@ -18,8 +18,8 @@
                     {{ form.due_date }}
                 </div>
                 <br>
-                <button type="submit" class="grey-btn">Add Task</button>
+                <input type="submit" class="grey-btn" value="Edit Task">
+            </div>
             </form>
         </div>
-    </div>
 {% endblock content %}

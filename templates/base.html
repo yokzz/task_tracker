@@ -22,11 +22,11 @@
           </ul>
     
           <div class="col-md-3 text-end">
-            <a href="{% url 'auth_system:login' %}"class="light-outline-btn me-2">Login</a>
-            <a href="{% url 'auth_system:signup' %}" class="light-purple-btn">Sign-up</a>
+            <a href="{% url 'auth_system:login' %}"class="light-grey-outline-btn me-2">Login</a>
+            <a href="{% url 'auth_system:signup' %}" class="light-grey-btn">Sign-up</a>
             <form action="{% url 'auth_system:logout' %}" method="post">
               {% csrf_token %}
-              <button type="submit" class="dark-purple-btn me-2" style="vertical-align: middle;">Logout</button>
+              <button type="submit" class="grey-btn me-2" style="vertical-align: middle;">Logout</button>
             </form>
           </div>
         </header>

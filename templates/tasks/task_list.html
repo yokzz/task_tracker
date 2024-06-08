@@ -1,42 +1,52 @@
 {% extends 'base.html' %}
 {% block content %}
     <div class="container-fluid">
-        <h2>Список завдань</h2>
-        <ul>
-            <a href="{% url 'tasks:task-form' %}" class="light-outline-btn">Додати завдання</a>
-        </ul>
-            <div class="alert alert-primary" role="alert">
-                <form method="get" class="form-inline mb-3">
-                    <h2>Status:</h2>
-                    {{ form.status }}
-                    <br>
-                    <button type="submit" class="light-purple-btn ml-2">Фільтрувати</button>
-                </form>
-            </div>
-        <ul>
-            {% for task in tasks %}
-            <div class="row row-cols-1 row-cols-md-3 g-4">
-                <div class="col">
-                  <div class="card">
-                    <div class="card-body">
-                      <a class="card-title" href="{% url 'tasks:task-detail' task.pk %}">{{ task.title }}</a>
-                      <p class="card-text">{{ task.description }}</p>
-                      {% if task.status == "to_do" %}
-                      <button class="btn btn-warning">{{ task.status }}</button>
-                      {% elif task.status == "in_progress" %}
-                      <button class="btn btn-secondary">{{ task.status }}</button>
-                      {% elif task.status == "done" %}
-                      <button class="btn btn-success">{{ task.status }}</button>
-                      {% else %}
-                      <button class="btn btn-dark">{{ task.status }}</button>
-                      {% endif %}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-            {% empty %}
-            <li>Завдань не знайдено</li>
-            {% endfor %}
-        </ul>
+        <h2>Task list</h2>
     </div>
+            <div class="task-row">
+                <div class="task-column-left">
+                  <h4 style="font-size: 600; color: #fff;">To do</h4>
+                  {% for task in tasks %}
+                  {% if task.status == "to_do" %}
+                  <section class="card-task">
+                    <header>
+                      <p>{{ task.title }}</p>
+                      <a href="{% url 'tasks:task-detail' task.pk %}">Details</a>
+                    </header>
+                  </section>
+                  {% endif %}
+                  {% endfor %}
+                  <a href="{% url 'tasks:task-create' %}" class="grey-btn">Add Task</a>
+                </div>
+                <div class="task-column-middle">
+                  <h4 style="font-size: 600; color: #fff;">In Progress</h4>
+                  {% for task in tasks %}
+                  {% if task.status == "in_progress" %}
+                  <section class="card-task">
+                    <header>
+                      <p>{{ task.title }}</p>
+                      <a href="{% url 'tasks:task-detail' task.pk %}">Details</a>
+                    </header>
+                  </section>
+                  {% endif %}
+                  {% endfor %}
+                  <a href="{% url 'tasks:task-create' %}" class="grey-btn">Add Task</a>
+                </div>
+                <div class="task-column-right">
+                  <h4 style="font-size: 600; color: #fff;">Done</h4>
+                  {% for task in tasks %}
+                  {% if task.status == "done" %}
+                  <section class="card-task">
+                    <header>
+                      <p>{{ task.title }}</p>
+                      <a href="{% url 'tasks:task-detail' task.pk %}">Details</a>
+                    </header>
+                  </section>
+                  {% endif %}
+                  {% endfor %}
+                  <div class="container">
+                    <a href="{% url 'tasks:task-create' %}" class="grey-btn">Add Task</a>
+                  </div>
+              </div>
+        </ul>
 {% endblock %}
