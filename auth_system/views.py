@@ -8,6 +8,7 @@ from django.urls import reverse_lazy
 class SignUpView(CreateView):
     template_name = "auth_system/signup.html"
     form_class = SignUpForm
+    success_url = reverse_lazy('login')
     
     def form_valid(self, form):
         user = form.save()
@@ -15,9 +16,11 @@ class SignUpView(CreateView):
         return redirect(reverse_lazy("auth_system:login"))
     
     
-class CustomLoginView(LoginView):
+class LoginView(LoginView):
     form_class = LoginForm
     template_name = "auth_system/login.html"
+    redirect_authenticated_user = True
+    authentication_form = LoginForm
     
 
 def logout_view(request):

@@ -1,11 +1,11 @@
 from django.db.models.query import QuerySet
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404, HttpResponseRedirect
 from django.urls import reverse_lazy
-from tasks.models import Task
+from tasks.models import Task, Comment, Like
 from tasks.forms import TaskForm, TaskFilterForm, CommentForm
 from tasks.mixins import UserIsOwnerMixin
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, View
 from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
@@ -47,15 +47,20 @@ class TaskDetailView(DetailView):
             return redirect('tasks:task-detail', pk = comment.task.pk)
             
 
-class TaskCreateView(CreateView):
+class TaskCreateView(LoginRequiredMixin, CreateView):
     model = Task
     template_name = "tasks/task_form.html"
     form_class = TaskForm
     success_url = reverse_lazy("tasks:task-list")
     
+    def form_valid(self, form):
+        form.instance.creator = self.request.user
+        return super().form_valid(form)
+    
     
 class TaskUpdateView(LoginRequiredMixin, UserIsOwnerMixin, UpdateView):
     model = Task
+    template_name = "tasks/task_edit_form.html"
     form_class = TaskForm
     success_url = reverse_lazy("tasks:task-list")
     
@@ -64,3 +69,13 @@ class TaskDeleteView(LoginRequiredMixin, DeleteView):
     model = Task
     template_name = "tasks/task_confirm_delete.html"
     success_url = reverse_lazy("tasks:task-list")
+    
+class CommentLikeToggle(LoginRequiredMixin, View):
+    def post(self, request, *args, **kwargs):
+        comment = get_object_or_404(Comment, pk=self.kwargs.get('pk'))
+        like_qs = Like.objects.filter(comment=comment, user=request.user)
+        if like_qs.exists():
+            like_qs.delete()
+        else:
+            Like.objects.create(comment=comment, user=request.user)
+        return HttpResponseRedirect(comment.get_absolute_url())

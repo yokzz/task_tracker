@@ -38,6 +38,9 @@ class Comment(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     media = models.FileField(upload_to="comments_media/", blank=True, null=True)
 
+    def __str__(self):
+        return self.task.title
+    
     def get_absolute_url(self):
         return self.task.get_absolute_url()
     

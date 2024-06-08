@@ -131,6 +131,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
-LOGIN_URL = "/admin/login/"
+LOGIN_URL = "auth_system:login"
 LOGIN_REDIRECT_URL = "tasks:task-list"
-LOGOUT_REDIRECT_URL = "tasks:logout"
+LOGOUT_REDIRECT_URL = "auth_system:login"

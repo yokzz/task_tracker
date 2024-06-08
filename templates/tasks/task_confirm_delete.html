@@ -1,14 +1,14 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div>
-    <h2>Видалення завдання</h2>
-    <p>Ви впевнені, що хочете видалити завдання "{{ object.title }}"?</p>
+<div class="container">
+    <h2>Task delete</h2>
+    <p>Are you sure you want to delete "{{ object.title }}"?</p>
 
     <form method="post">
         {% csrf_token %}
-        <button type="submit" class="btn btn-danger">Так, видалити</button>
-        <a href="{% url 'tasks:task-list' %}">Ні, повернутися до списку завдань</a>
+        <button type="submit" class="grey-btn">Yes, delete</button>
+        <a href="{% url 'tasks:task-list' %}" style="color: #BDBFB7;">No, go back to task list</a>
     </form>
 </div>
 {% endblock %}

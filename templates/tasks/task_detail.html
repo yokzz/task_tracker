@@ -1,82 +1,92 @@
 {% extends 'base.html' %}
 {% block content %}
 {% load custom_tags %}
-    <div class="container-sm">
-        <div class="card" style="width: 18rem;">
-            <div class="card-body">
-              <h5 class="card-title">{{ task.title }}</h5>
-              <h6 class="card-subtitle mb-2 text-body-secondary">{{ task.due_date }}</h6>
-              <p class="card-text">{{ task.description }}</p>
-              {% if task.priority == "low" %}
-              <span class="badge text-bg-secondary">{{ task.priority }}</span>
-              {% elif task.priority == "medium" %}
-              <span class="badge text-bg-primary">{{ task.priority }}</span>
-              {% elif task.priority == "high" %}
-              <span class="badge text-bg-warning">{{ task.priority }}</span>
-              {% else %}
-              <span class="badge text-bg-danger">{{ task.priority }}</span>
-              {% endif %}
-              {% if task.status == "to_do" %}
-              <span class="badge text-bg-warning">{{ task.status }}</span>
-              {% elif task.status == "in_progress" %}
-              <span class="badge text-bg-secondary">{{ task.status }}</span>
-              {% elif task.status == "done" %}  
-              <span class="badge text-bg-success">{{ task.status }}</span>
-              {% else %}
-              <span class="badge text-bg-dark">{{ task.status }}</span>
-              {% endif %}
-              <br>
-              <br>
-              <a href="{% url 'tasks:task-update' task.id %}" class="btn btn-warning card-link">Редагувати</a>
-              <a href="{% url 'tasks:task-delete' task.id %}" class="btn btn-danger card-link">Видалити</a>
-            </div>
-          </div>
-  <!-- Main Body -->
-  <section>
-      <div class="container">
-          <div class="row">
-              <div class="col-sm-5 col-md-6 col-12 pb-4">
-                  <h1>Comments</h1>
-                  {% for comment in task.comments.all %}
-                  <div class="text-justify lighter mt-4 float-right">
-                    <h4>{{ comment.author.username }}</h4>
-                    <h6 class="card-subtitle mb-2 text-body-secondary">{{ comment.created_at }}</h6>
-                    <p>{{ comment.content }}</p>
-                    <div style="padding-bottom: 5px;">
-                      {% if comment.media.url|endswith:".jpg" or comment.media.url|endswith:".png" or comment.media.url|endswith:".jpeg" %}
-                        <img class="image" src="{{ comment.media.url }}" alt="Зображення коментаря" style="max-width: 320px;">
-                      {% elif comment.media.url|endswith:".mp4" %}
-                        <video class="image" width="320" height="240" controls>
-                          <source src="{{ comment.media.url }}" type="video/mp4">
-                          Your browser does not support the video tag.
-                        </video>
-                      {% else %}
-                        <a class="image" href="{{ comment.media.url }}">Завантажити файл</a>
-                      {% endif %}
+  <div class="container-sm">
+    <section class="card-task-detail">
+      <header>
+        <p>{{ task.title }}</p>
+        <p style="font-size: 10px; color: #BDBFB7;">{{ task.due_date }}</p>
+      </header>
+      <main>
+        <p>{{ task.description }}</p>
+      </main>
+      <footer>
+        {% if task.priority == "low" %}
+        <span class="badge text-bg-secondary">{{ task.priority }}</span>
+        {% elif task.priority == "medium" %}
+        <span class="badge text-bg-primary">{{ task.priority }}</span>
+        {% elif task.priority == "high" %}
+        <span class="badge text-bg-warning">{{ task.priority }}</span>
+        {% else %}
+        <span class="badge text-bg-danger">{{ task.priority }}</span>
+        {% endif %}
+        {% if task.status == "to_do" %}
+        <span class="badge text-bg-warning">{{ task.status }}</span>
+        {% elif task.status == "in_progress" %}
+        <span class="badge text-bg-secondary">{{ task.status }}</span>
+        {% elif task.status == "done" %}  
+        <span class="badge text-bg-success">{{ task.status }}</span>
+        {% else %}
+        <span class="badge text-bg-dark">{{ task.status }}</span>
+        {% endif %}
+        <a href="{% url 'tasks:task-update' task.id %}" id="post" class="grey-btn">Edit</a>
+        <a href="{% url 'tasks:task-delete' task.id %}" id="post" class="grey-btn">Delete</a>
+      </footer>
+    </section>  
+
+    <!-- Коментарі -->
+    <section>
+      <div class="row">
+        <div class="col-sm-5 col-md-6 col-12 pb-4">
+          <h1>Comments</h1>
+            {% for comment in task.comments.all %}
+              <div class="text-justify lighter mt-4 float-right">
+                <h4>{{ comment.author.username }}</h4>
+                <h6 class="card-subtitle mb-2">{{ comment.created_at }}</h6>
+                <p>{{ comment.content }}</p>
+                {% if comment.media %}
+                  <div style="padding-bottom: 5px;">
+                    <div class="comment-media">
+                        {% if comment.media.url|endswith:".jpg" or comment.media.url|endswith:".png" or comment.media.url|endswith:".jpeg" %}
+                            <img src="{{ comment.media.url }}" alt="Зображення коментаря" style="max-width: 300px;">
+                        {% elif comment.media.url|endswith:".mp4" %}
+                            <video width="320" height="240" controls>
+                                <source src="{{ comment.media.url }}" type="video/mp4">
+                                Your browser does not support the video tag.
+                            </video>
+                        {% else %}
+                            <a href="{{ comment.media.url }}">Download file</a>
+                        {% endif %}
+                      </div>
                     </div>
+                {% endif %}
+                <form action="{% url 'tasks:comment-like-toggle' comment.id %}" method="post">
+                  {% csrf_token %}
+                  <button type="submit" class="light-greyy-btn">
+                    ❤️{{ comment.likes.count }}
+                  </button>
+                </form>
                 </div>
-                  {% empty %}
-                    <p>no comments</p>
-                  {% endfor %}
+            {% empty %}
+                <p>No comments</p>
+            {% endfor %}
               </div>
-              <div class="col-lg-4 col-md-5 col-sm-4 offset-md-1 offset-sm-1 col-12 mt-4">
-                  <form action="{% url 'tasks:task-detail' task.id %}" method="post" enctype="multipary/form-data" id="align-form" class="formm">
-                      <div class="formm-group">
-                          {% csrf_token %}
-                          <h4>Leave a comment</h4>
-                          {{ comment.content }}
-                          <label for="content">Message</label>
-                          <textarea name="content" id=""msg cols="30" rows="5" class="form-control" style="border: 1px solid #4c486b;"></textarea>
-                          {{ comment.media }}
-                          <label for="media">Media</label>
-                          <input type="file" name="media" id=""msg cols="30" rows="5" class="form-control" style="border: 1px solid #4c486b;">
-                      </div>
-                      <div class="formm-group">
-                        <button type="submit" id="post" class="light-purple-btn">Post Comment</button> 
-                      </div>
-                  </form>
+
+        <!-- Форма додавання коментаря -->
+        <div class="col-lg-4 col-md-5 col-sm-4 offset-md-1 offset-sm-1 col-12 mt-4">
+            <form action="{% url 'tasks:task-detail' task.id %}" method="post" enctype="multipart/form-data" class="formm">
+              <div class="formm-group">
+                {% csrf_token %}
+                <h4>Leave a comment</h4>
+                {{ comment_form.content }}
+                <br>
+                {{ comment_form.media }}
+                <br>
+                <button type="submit" id="post" class="grey-btn">Post Comment</button> 
               </div>
-          </div>
-      </div>
-  </section>
+              </form>
+        </div>
+    </div>
+  </div>
+</section>
 {% endblock content %}
